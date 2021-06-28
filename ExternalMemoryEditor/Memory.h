@@ -3,6 +3,8 @@
 
 class Memory {
 	public:
+		static DWORD GetProcessID(const wchar_t* processName);
+
 		static uintptr_t GetModuleBaseAddress(DWORD procId, const wchar_t* modName);
 
 		static DWORD Scan(HANDLE handle, DWORD baseAddress, DWORD VFTableAddress);

@@ -8,20 +8,15 @@
 #include "LuaStateHook.h"
 
 int main() {
-    HWND hwnd = FindWindowA(NULL, "Roblox");
-    if (!hwnd) {
-        std::cout << "Couldn't find Roblox." << std::endl;
+    DWORD processID = Memory::GetProcessID(L"RobloxPlayerBeta.exe");
+    if (!processID) {
+        std::cout << "Couldn't get Roblox process ID." << std::endl;
         return 0;
     }
 
-    DWORD processID;
-    HANDLE handle;
-
-    GetWindowThreadProcessId(hwnd, &processID);
-    handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
-
-    if (!processID || !handle) {
-        std::cout << "Couldn't attach to Roblox." << std::endl;
+    HANDLE handle = OpenProcess(PROCESS_ALL_ACCESS, FALSE, processID);
+    if (!handle) {
+        std::cout << "Couldn't get Roblox handle." << std::endl;
         return 0;
     }
 

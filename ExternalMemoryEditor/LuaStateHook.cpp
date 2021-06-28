@@ -49,7 +49,7 @@ DWORD LuaStateHook::Hook(HANDLE handle, DWORD baseAddress) {
 
     void* hookLocation = VirtualAllocEx(handle, 0, sizeof(assemblyHook), MEM_COMMIT | MEM_RESERVE, PAGE_EXECUTE_READWRITE);
 
-    DWORD jmpBackAddress = (index2adr + 6) - ((DWORD)hookLocation + sizeof(assemblyHook));
+    DWORD jmpBackAddress = (index2adr + hookSize) - ((DWORD)hookLocation + sizeof(assemblyHook));
     memcpy(&assemblyHook[jmpBackOffset], (void*)&jmpBackAddress, sizeof(jmpBackAddress));
 
     WriteProcessMemory(handle, hookLocation, assemblyHook, sizeof(assemblyHook), 0);

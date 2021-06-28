@@ -3,23 +3,64 @@
 #include <TlHelp32.h>
 #include "Memory.h"
 
-uintptr_t Memory::GetModuleBaseAddress(DWORD procId, const wchar_t* modName) {
-	uintptr_t modBaseAddr = 0;
-	HANDLE hSnap = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, procId);
-	if (hSnap != INVALID_HANDLE_VALUE) {
-		MODULEENTRY32 modEntry;
-		modEntry.dwSize = sizeof(modEntry);
-		if (Module32First(hSnap, &modEntry)) {
-			do {
-				if (!_wcsicmp(modEntry.szModule, modName)) {
-					modBaseAddr = (uintptr_t)modEntry.modBaseAddr;
-					break;
-				}
-			} while (Module32Next(hSnap, &modEntry));
-		}
+DWORD Memory::GetProcessID(const wchar_t* processName) {
+	DWORD processID = 0;
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPPROCESS, 0);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		std::cout << "Couldn't get running processes." << std::endl;
+		return 0;
 	}
-	CloseHandle(hSnap);
-	return modBaseAddr;
+
+	PROCESSENTRY32 processEntry;
+	processEntry.dwSize = sizeof(PROCESSENTRY32);
+
+	if (!Process32First(snapshot, &processEntry)) {
+		CloseHandle(snapshot);
+		std::cout << "Couldn't get info of processes." << std::endl;
+		return 0;
+	}
+
+	do {
+		if (!_wcsicmp(processEntry.szExeFile, processName)) {
+			processID = processEntry.th32ProcessID;
+			break;
+		}
+	} while (Process32Next(snapshot, &processEntry));
+
+	CloseHandle(snapshot);
+
+	return processID;
+}
+
+uintptr_t Memory::GetModuleBaseAddress(DWORD processID, const wchar_t* moduleName) {
+	uintptr_t moduleBaseAddress = 0;
+
+	HANDLE snapshot = CreateToolhelp32Snapshot(TH32CS_SNAPMODULE | TH32CS_SNAPMODULE32, processID);
+	if (snapshot == INVALID_HANDLE_VALUE) {
+		std::cout << "Couldn't get running processes." << std::endl;
+		return 0;
+	}
+	
+	MODULEENTRY32 moduleEntry;
+	moduleEntry.dwSize = sizeof(moduleEntry);
+
+	if (!Module32First(snapshot, &moduleEntry)) {
+		CloseHandle(snapshot);
+		std::cout << "Couldn't get info of modules." << std::endl;
+		return 0;
+	}
+
+	do {
+		if (!_wcsicmp(moduleEntry.szModule, moduleName)) {
+			moduleBaseAddress = (uintptr_t)moduleEntry.modBaseAddr;
+			break;
+		}
+	} while (Module32Next(snapshot, &moduleEntry));
+
+	CloseHandle(snapshot);
+
+	return moduleBaseAddress;
 }
 
 DWORD Memory::Scan(HANDLE handle, DWORD baseAddress, DWORD VFTableAddress) {
