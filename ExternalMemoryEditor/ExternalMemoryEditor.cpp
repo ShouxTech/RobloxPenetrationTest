@@ -33,7 +33,7 @@ int main() {
     std::cout << "Scanning..." << std::endl;
 
     DWORD game = Memory::Scan(handle, baseAddress, baseAddress + Addresses::DataModel);
-    DWORD players = Memory::FindFirstChild(handle, game, "Players");
+    DWORD players = Memory::GetService(handle, game, "Players");
     DWORD localPlayer = Memory::GetPointerAddress(handle, players + 0x110);
     DWORD character = Memory::GetPointerAddress(handle, localPlayer + 0x64);
     DWORD team = Memory::GetPointerAddress(handle, localPlayer + 0x98);
@@ -63,7 +63,6 @@ int main() {
     std::cout << "LocalPlayer address: " << std::hex << localPlayer << std::dec << std::endl;
     std::cout << "Character address: " << std::hex << character << std::dec << std::endl;
     std::cout << "Index2Adr address: " << std::hex << baseAddress + Addresses::Index2Adr << std::dec << std::endl;
-    //std::cout << "HumanoidRootPart address: " << std::hex << Memory::FindFirstChild(handle, character, "HumanoidRootPart") << std::dec << std::endl;
     std::cout << "--------------------------------------" << std::endl;
 
     std::cout << "Place ID: " << placeID << std::endl;

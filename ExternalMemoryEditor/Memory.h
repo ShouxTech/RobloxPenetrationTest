@@ -22,7 +22,11 @@ class Memory {
 
 		static std::string GetName(HANDLE handle, DWORD instance);
 
+		static std::string GetClassType(HANDLE handle, DWORD instance); // GetClassName.
+
 		static std::vector<DWORD> GetChildren(HANDLE handle, DWORD instance);
+
+		static DWORD GetService(HANDLE handle, DWORD game, std::string className);
 
 		static DWORD FindFirstChild(HANDLE handle, DWORD instance, std::string name);
 };

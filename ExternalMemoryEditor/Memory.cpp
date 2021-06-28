@@ -143,6 +143,15 @@ void* Memory::CreateCharPointerString(HANDLE handle, const char* string) {
 	return stringMemory;
 }
 
+std::string Memory::GetClassType(HANDLE handle, DWORD instance) {
+	std::string className;
+
+	DWORD classDescriptor = GetPointerAddress(handle, instance + 0xC);
+	className = ReadStringOfUnknownLength(handle, GetPointerAddress(handle, classDescriptor + 0x4));
+
+	return className;
+}
+
 std::string Memory::GetName(HANDLE handle, DWORD instance) {
 	uintptr_t nameAddress = GetPointerAddress(handle, instance + 0x28);
 	std::string name = ReadStringOfUnknownLength(handle, nameAddress);
@@ -174,6 +183,16 @@ std::vector<DWORD> Memory::GetChildren(HANDLE handle, DWORD instance) {
 	}
 
 	return children;
+}
+
+DWORD Memory::GetService(HANDLE handle, DWORD game, std::string className) {
+	std::vector<DWORD> children = GetChildren(handle, game);
+
+	for (DWORD child : children) {
+		if (GetClassType(handle, child) == className) {
+			return child;
+		}
+	}
 }
 
 DWORD Memory::FindFirstChild(HANDLE handle, DWORD instance, std::string name) {
