@@ -139,18 +139,23 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
+    <ClCompile Include="CommandHandler.cpp" />
     <ClCompile Include="ExternalMemoryEditor.cpp" />
     <ClCompile Include="LuaStateHook.cpp" />
     <ClCompile Include="Memory.cpp" />
     <ClCompile Include="PathParser.cpp" />
     <ClCompile Include="Print.cpp" />
+    <ClCompile Include="StringUtility.cpp" />
   </ItemGroup>
   <ItemGroup>
+    <ClInclude Include="CommandHandler.h" />
     <ClInclude Include="LuaStateHook.h" />
     <ClInclude Include="Memory.h" />
     <ClInclude Include="PathParser.h" />
     <ClInclude Include="Addresses.h" />
     <ClInclude Include="Print.h" />
+    <ClInclude Include="RBXStructs.h" />
+    <ClInclude Include="StringUtility.h" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

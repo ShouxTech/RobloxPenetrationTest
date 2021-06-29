@@ -97,6 +97,11 @@ T Memory::Read(HANDLE handle, LPCVOID address, SIZE_T size) {
 	return buffer;
 }
 
+template<typename T>
+bool Memory::Write(HANDLE handle, LPVOID address, LPCVOID buffer, SIZE_T size) {
+	return WriteProcessMemory(handle, address, buffer, size, 0);
+}
+
 DWORD Memory::GetPointerAddress(HANDLE handle, DWORD address) {
 	uintptr_t pointerAddress = GetDMAAddress(handle, address, { 0x0 });
 	return pointerAddress;
@@ -141,6 +146,10 @@ void* Memory::CreateCharPointerString(HANDLE handle, const char* string) {
 	}
 
 	return stringMemory;
+}
+
+DWORD Memory::GetCharacter(HANDLE handle, DWORD player) {
+	return GetPointerAddress(handle, player + 0x64);
 }
 
 std::string Memory::GetClassType(HANDLE handle, DWORD instance) {
@@ -203,4 +212,24 @@ DWORD Memory::FindFirstChild(HANDLE handle, DWORD instance, std::string name) {
 			return child;
 		}
 	}
+}
+
+Vector3 Memory::GetPosition(HANDLE handle, DWORD instance) {
+	Vector3 position;
+
+	DWORD primitive = Read<DWORD>(handle, (LPCVOID)(instance + 0xA8));
+	position = Read<Vector3>(handle, (LPCVOID)(primitive + 0x11C));
+
+	return position;
+}
+
+void Memory::SetPosition(HANDLE handle, DWORD instance, Vector3 position) {
+	DWORD primitive = Read<DWORD>(handle, (LPCVOID)(instance + 0xA8));
+	Vector3 currentPosition = GetPosition(handle, instance);
+
+	Write<Vector3>(handle, (LPVOID)(primitive + 0x11C), &position);
+
+	/*Write<float>(handle, (LPVOID)(primitive + 0x11C), &position.X);
+	Write<float>(handle, (LPCVOID)(primitive + 0x120), *position.Y);
+	Write<float>(handle, (LPCVOID)(primitive + 0x124), &position.Z);*/
 }
