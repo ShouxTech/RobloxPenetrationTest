@@ -3,10 +3,9 @@
 
 class PathParser {
     private:
-        HANDLE Handle;
         DWORD Game;
     public:
-        PathParser(HANDLE handle, DWORD game);
+        PathParser(DWORD game);
 
         DWORD ParsePath(std::string path);
 };

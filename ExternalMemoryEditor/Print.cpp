@@ -38,7 +38,7 @@ Print::Print(HANDLE handle, DWORD baseAddress) {
 }
 
 void Print::PrintLine(int type, const char* text) {
-    const char* stringMemory = (const char*)Memory::CreateCharPointerString(this->Handle, text);
+    const char* stringMemory = (const char*)Memory::CreateCharPointerString(text);
 
     Args args = { type, stringMemory, this->BaseAddress + Addresses::Print };
 

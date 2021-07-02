@@ -4,39 +4,48 @@
 
 class Memory {
 	public:
+		HWND RobloxHWND;
 		static DWORD GetProcessID(const wchar_t* processName);
 
-		static uintptr_t GetModuleBaseAddress(DWORD procId, const wchar_t* modName);
+		static uintptr_t GetModuleBaseAddress(DWORD processID, const wchar_t* moduleName);
 
-		static DWORD Scan(HANDLE handle, DWORD baseAddress, DWORD VFTableAddress);
+		static void SetHandle(HANDLE handle_);
+
+		static DWORD Scan(DWORD baseAddress, DWORD VFTableAddress);
 
 		template <typename T>
-		static T Read(HANDLE handle, LPCVOID address, SIZE_T size = sizeof(T));
+		static T Read(LPCVOID address, SIZE_T size = sizeof(T));
 
 		template <typename T>
-		static bool Write(HANDLE handle, LPVOID address, LPCVOID buffer, SIZE_T size = sizeof(T));
+		static bool Write(LPVOID address, LPCVOID buffer, SIZE_T size = sizeof(T));
 
-		static DWORD GetPointerAddress(HANDLE handle, DWORD address);
+		static DWORD GetPointerAddress(DWORD address);
 
-		static uintptr_t GetDMAAddress(HANDLE handle, uintptr_t ptr, std::vector<unsigned int> offsets);
+		static uintptr_t GetDMAAddress(uintptr_t ptr, std::vector<unsigned int> offsets);
 
-		static std::string ReadStringOfUnknownLength(HANDLE handle, DWORD address);
+		static std::string ReadStringOfUnknownLength(DWORD address);
 
-		static void* CreateCharPointerString(HANDLE handle, const char* string);
+		static void* CreateCharPointerString(const char* string);
 
-		static DWORD GetCharacter(HANDLE handle, DWORD player);
+		static DWORD GetTeam(DWORD player);
 
-		static std::string GetName(HANDLE handle, DWORD instance);
+		static DWORD GetCharacter(DWORD player);
 
-		static std::string GetClassType(HANDLE handle, DWORD instance); // GetClassName.
+		static std::string GetName(DWORD instance);
 
-		static std::vector<DWORD> GetChildren(HANDLE handle, DWORD instance);
+		static std::string GetClassType(DWORD instance); // GetClassName.
 
-		static DWORD GetService(HANDLE handle, DWORD game, std::string className);
+		static std::vector<DWORD> GetChildren(DWORD instance);
 
-		static DWORD FindFirstChild(HANDLE handle, DWORD instance, std::string name);
+		static std::vector<DWORD> GetPlayers(DWORD playersService);
 
-		static Vector3 GetPosition(HANDLE handle, DWORD instance);
+		static DWORD GetService(DWORD game, std::string className);
 
-		static void SetPosition(HANDLE handle, DWORD instance, Vector3 position);
+		static DWORD FindFirstChild(DWORD instance, std::string name);
+
+		static Vector3 GetPosition(DWORD instance);
+
+		static void SetPosition(DWORD instance, Vector3 position);
+
+		static Vector3 GetCameraPosition(DWORD visualEngine);
 };
